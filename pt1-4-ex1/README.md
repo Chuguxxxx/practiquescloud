@@ -1,4 +1,4 @@
-<img width="398" height="284" alt="{3FA88AC3-EC3C-4C95-B976-58A8D76C0F3D}" src="https://github.com/user-attachments/assets/be9967d8-a32b-4a54-9ec9-2a56ebc3e48c" /># Pt1.4 - Ejercicio 1: Instancias EC2 con Terraform
+# Pt1.4 - Ejercicio 1: Instancias EC2 con Terraform
 
 ## 1. Mi objetivo
 
