@@ -47,7 +47,37 @@ Desactivo la asignación automática de IP pública y creo el grupo de seguridad
 Compruebo que las seis instancias `t3.micro` aparecen en estado `Running` en la zona `us-east-1a`. Una instancia adicional está en estado `Terminated` y no forma parte de las seis. Las comprobaciones de estado de EC2-C1 y EC2-C2 todavía se están inicializando.
 
 ![Comprobación de las seis instancias](assets/ec2_instances.png)
+## Parte C: Despliegue con Terraform (IaC)
 
+### C.1. Configuración de Terraform
+
+Creo el archivo `main.tf` para automatizar la infraestructura que anteriormente realizo de forma manual desde AWS.
+
+En el código configuro los siguientes recursos:
+
+- `aws_vpc`: crea la VPC con la dirección 10.0.0.0/16.
+- `aws_subnet`: crea las tres subredes en la zona us-east-1a.
+- `aws_security_group`: crea un grupo de seguridad para las instancias.
+- `aws_instance`: crea dos instancias EC2 en cada subred utilizando `count = 2`.
+
+### C.2. Despliegue de la infraestructura
+
+Para desplegar la infraestructura utilizo los siguientes comandos:
+
+- `terraform init`: inicializo Terraform.
+- `terraform validate`: compruebo que el código sea válido.
+- `terraform plan`: reviso los recursos que se van a crear.
+- `terraform apply`: creo toda la infraestructura automáticamente.
+
+### C.3. Comprobación del despliegue
+
+Compruebo desde la consola de AWS que se crean correctamente la VPC, las tres subredes y las seis instancias EC2.
+
+### C.4. Topología de red
+
+Realizo un diagrama con draw.io para representar la infraestructura creada.
+
+![Topología de red](assets/topologia.png)
 ### B.9. Comprobación de la red
 
 Por último, reviso el mapa de recursos de la VPC y compruebo que las tres subredes están en `us-east-1a` y asociadas a la misma tabla de rutas.
