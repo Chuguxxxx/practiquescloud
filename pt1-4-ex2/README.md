@@ -1,29 +1,55 @@
-# Pt1.4 - Ejercicio 2: VPC, subredes y EC2
+## Parte B: Despliegue manual desde la consola de AWS
 
-## 1. Objetivo
+### B.1. Creación de la VPC
 
-Crear una  VPC con tres subredes en AWS y desplegar dos instancias EC2 en cada una. Primero realizo la configuración manualmente desde AWS y después utilizo Terraform para automatizar el proceso.
+Creo una VPC llamada `VPC-PT1.4-EX2` desde la consola de AWS y compruebo que aparece en estado `Available`.
 
-## 2. Creación manual de la VPC
+![Creación de la VPC](assets/vpc_creada.png)
 
-Entro en AWS y creo una VPC llamada `VPC-PT1.4-EX2` con la dirección `10.0.0.0/16` en la región `us-east-1`. Selecciono la opción VPC only para configurar las subredes por separado.
+### B.2. Configuración de la VPC
 
-## 3. Creación de las subredes
+Accedo a los detalles de la VPC y compruebo que utiliza el bloque IPv4 `10.0.0.0/16` y que no es la VPC predeterminada.
 
-Dentro de la VPC creo tres subredes llamadas Subnet-A, Subnet-B y Subnet-C, con las direcciones 10.0.32.0/25, 10.0.30.0/23 y 10.0.33.0/28. Las configuro en la zona de disponibilidad us-east-1a.
+![Configuración de la VPC](assets/vpc_configuracion.png)
 
-## 4. Creación manual de las instancias EC2
+### B.3. Creación de las subredes
 
-Desde la consola de AWS creo seis instancias EC2 con Amazon Linux 2023 y el tipo t3.micro. Asigno dos máquinas a cada subred y utilizo el mismo grupo de seguridad para todas. Después compruebo que las seis instancias aparecen en estado Running y en la zona de disponibilidad us-east-1a.
+Creo las tres subredes `Subnet-A`, `Subnet-B` y `Subnet-C` dentro de la misma VPC. Compruebo que las tres aparecen en estado `Available`.
 
-## 5. Despliegue con Terraform
+![Creación de las subredes](assets/vpc_subnets.png)
 
-*Pendiente de completar.*
+### B.4. Comprobación de Subnet-A
 
-## 6. Topología de red
+Accedo a los detalles de `Subnet-A` y compruebo que tiene la dirección `10.0.32.0/25` y 123 direcciones IPv4 disponibles.
 
-*Pendiente de completar.*
+![Comprobación de Subnet-A](assets/subnet_a.png)
 
-## 7. Comprobación
+### B.5. Creación de la primera instancia EC2
 
-*Pendiente de completar.*
+Entro en EC2, selecciono `Launch an instance`, asigno el nombre `EC2-A1` y selecciono Amazon Linux.
+
+![Creación de la primera instancia EC2](assets/configuracion_ec2.png)
+
+### B.6. Asignación de la instancia a la subred
+
+En `Network settings` selecciono la VPC `VPC-PT1.4-EX2` y la subred `Subnet-A`, situada en la zona `us-east-1a`.
+
+![Asignación de la instancia a la subred](assets/seleccion_subred.png)
+
+### B.7. Configuración del grupo de seguridad
+
+Desactivo la asignación automática de IP pública y creo el grupo de seguridad `SG-PT1.4-EX2` para las instancias.
+
+![Configuración del grupo de seguridad](assets/configuracion_red_ec2.png)
+
+### B.8. Comprobación de las seis instancias
+
+Compruebo que las seis instancias `t3.micro` aparecen en estado `Running` en la zona `us-east-1a`. Una instancia adicional está en estado `Terminated` y no forma parte de las seis. Las comprobaciones de estado de EC2-C1 y EC2-C2 todavía se están inicializando.
+
+![Comprobación de las seis instancias](assets/ec2_instances.png)
+
+### B.9. Comprobación de la red
+
+Por último, reviso el mapa de recursos de la VPC y compruebo que las tres subredes están en `us-east-1a` y asociadas a la misma tabla de rutas.
+
+![Comprobación de la red](assets/mapa_vpc_aws.png)
