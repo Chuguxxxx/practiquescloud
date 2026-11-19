@@ -408,6 +408,8 @@ La comprobación con AWS CLI muestra el tipo, la subred, la clave, el Security G
 
 ![Verificación de las dos instancias](assets/13-aws-instancia-ec2.png)
 
+En la cuenta del laboratorio ya había otros recursos, como dos instancias FTP y otro Internet Gateway. No los he modificado. Solo he creado los recursos de esta práctica.
+
 ### 8.6. Verificación automática de la rúbrica
 
 He ejecutado un verificador contra AWS. Comprueba los cuatro bloques técnicos de la rúbrica, no solo que los recursos existan.
@@ -510,13 +512,19 @@ Este comando elimina la VPC, las subredes, el Internet Gateway, la tabla de ruta
 
 ## 12. Relación con la rúbrica
 
-| Criterio | Peso | Evidencia |
-|---|---:|---|
-| Provider, VPC y subredes | 20% | `versions.tf`, `main.tf`, capturas 01, 02, 03, 04, 10 y 16 |
-| Internet Gateway y tablas de rutas | 15% | Capturas 05, 11 y 16 |
-| Security Group | 20% | Capturas 09, 12 y 16 |
-| Instancias EC2 y etiquetado | 25% | Capturas 06, 07, 08, 13, 16 y 17 |
-| Repositorio y documentación | 20% | Estructura, README, captura 15 y todas las imágenes de `assets/` |
+He revisado los cinco criterios del DOCX. Todos están cumplidos.
+
+| Criterio | Peso | Estado | Evidencia |
+|---|---:|---|---|
+| 1. Provider, VPC y subredes | 20% | Cumplido | `versions.tf`, `main.tf`, capturas 01, 02, 03, 04, 10 y 16 |
+| 2. Internet Gateway y tablas de rutas | 15% | Cumplido | Capturas 05, 11 y 16 |
+| 3. Security Group | 20% | Cumplido | Capturas 09, 12 y 16 |
+| 4. Instancias EC2 y etiquetado | 25% | Cumplido | Capturas 06, 07, 08, 13, 16 y 17 |
+| 5. Repositorio y documentación | 20% | Cumplido | Estructura, README, captura 15 y las 17 imágenes de `assets/` |
+
+La verificación automática contra AWS ha devuelto **39/39 comprobaciones correctas**.
+
+Las pruebas de conectividad confirman que SSH funciona en las dos instancias y que ICMP está restringido desde fuera de la VPC.
 
 ---
 
