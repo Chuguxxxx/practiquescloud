@@ -55,6 +55,8 @@ Todo el código está en este repositorio y se puede reproducir con los comandos
 
 Las direcciones IP públicas son temporales. Pueden cambiar si las instancias se detienen y se vuelven a iniciar.
 
+Todos los identificadores de esta tabla son los que aparecen en las capturas. Al terminar la práctica eliminé los recursos con `terraform destroy`, así que ya no existen en AWS. El detalle está en la sección 11.
+
 ![Mapa de recursos de la VPC](assets/02-vpc-mapa-recursos.jpeg)
 
 ---
@@ -81,7 +83,8 @@ practiquescloud/
     │   ├── 14-terraform-validate-plan.png
     │   ├── 15-github.png
     │   ├── 16-verificacion-rubrica.png
-    │   └── 17-pruebas-conectividad.png
+    │   ├── 17-pruebas-conectividad.png
+    │   └── 18-terraform-destroy.png
     ├── main.tf
     ├── variables.tf
     ├── outputs.tf
@@ -433,11 +436,13 @@ El resultado ha sido **39/39 comprobaciones correctas**:
 
 ![Verificación de los 39 puntos de la rúbrica](assets/16-verificacion-rubrica.png)
 
-También confirmé que Terraform no detecta cambios pendientes:
+En el momento de la verificación, Terraform no detectaba cambios pendientes:
 
 ```text
 No changes. Your infrastructure matches the configuration.
 ```
+
+Después del `destroy` de la sección 11, un `terraform plan` vuelve a proponer los 10 recursos. Es lo esperado: el estado está vacío.
 
 ### 8.7. Pruebas de conectividad
 
@@ -498,15 +503,31 @@ La IP pública puede ser distinta si las instancias se han reiniciado.
 
 ## 11. Limpieza de recursos
 
-No he ejecutado `terraform destroy`.
-
-Si hay que eliminar la infraestructura, primero hay que pedir autorización y después ejecutar:
+Al terminar la práctica pedí autorización y ejecuté `terraform destroy`.
 
 ```bash
-terraform destroy
+terraform destroy -input=false -auto-approve
 ```
 
-Este comando elimina la VPC, las subredes, el Internet Gateway, la tabla de rutas, el Security Group y las dos instancias.
+La salida real del final del proceso:
+
+```text
+aws_subnet.public_b: Destruction complete after 1s
+aws_security_group.pt2_2: Destruction complete after 1s
+aws_vpc.vpc_03: Destruction complete after 1s
+
+Destroy complete! Resources: 10 destroyed.
+```
+
+Después comprobé que los recursos ya no existen:
+
+- `terraform state list` devuelve 0 recursos.
+- La VPC, las dos subredes, el IGW, la tabla de rutas y el Security Group responden `NotFound`.
+- Las dos instancias están en estado `terminated`.
+
+![terraform destroy y verificación de la limpieza](assets/18-terraform-destroy.png)
+
+Eliminé la infraestructura para no consumir el presupuesto del laboratorio. Se puede volver a crear en cualquier momento con `terraform init` y `terraform apply`.
 
 ---
 
@@ -520,7 +541,7 @@ He revisado los cinco criterios del DOCX. Todos están cumplidos.
 | 2. Internet Gateway y tablas de rutas | 15% | Cumplido | Capturas 05, 11 y 16 |
 | 3. Security Group | 20% | Cumplido | Capturas 09, 12 y 16 |
 | 4. Instancias EC2 y etiquetado | 25% | Cumplido | Capturas 06, 07, 08, 13, 16 y 17 |
-| 5. Repositorio y documentación | 20% | Cumplido | Estructura, README, captura 15 y las 17 imágenes de `assets/` |
+| 5. Repositorio y documentación | 20% | Cumplido | Estructura, README, captura 15 y las 18 imágenes de `assets/` |
 
 La verificación automática contra AWS ha devuelto **39/39 comprobaciones correctas**.
 
@@ -537,6 +558,8 @@ Lo más importante ha sido comprobar el plan antes de aplicar los cambios y veri
 También he visto que AWS valida los nombres y las descripciones de los Security Groups. Un error pequeño en un texto puede detener todo el despliegue.
 
 El resultado es una infraestructura reproducible, documentada y sin credenciales en el repositorio.
+
+Al final eliminé los recursos con `terraform destroy` para no consumir el laboratorio. Las capturas y el código permiten recrearla igual.
 
 ---
 
