@@ -79,7 +79,9 @@ practiquescloud/
     │   ├── 12-aws-security-group.png
     │   ├── 13-aws-instancia-ec2.png
     │   ├── 14-terraform-validate-plan.png
-    │   └── 15-github.png
+    │   ├── 15-github.png
+    │   ├── 16-verificacion-rubrica.png
+    │   └── 17-pruebas-conectividad.png
     ├── main.tf
     ├── variables.tf
     ├── outputs.tf
@@ -376,7 +378,7 @@ Las dos subredes aparecen asociadas a la misma tabla.
 
 ### 8.4. Security Group
 
-El Security Group se llama `pt2-2-sg`.
+El nombre técnico del Security Group es `pt2-2-sg`. La etiqueta `Name` que se ve en la consola es `SG-Pt2.2`.
 
 ![Security Group en la consola](assets/09-security-group-consola.jpeg)
 
@@ -405,6 +407,45 @@ Las dos usan una AMI de Amazon Linux 2023 y el par de claves `vockey`.
 La comprobación con AWS CLI muestra el tipo, la subred, la clave, el Security Group y la IP pública de cada instancia.
 
 ![Verificación de las dos instancias](assets/13-aws-instancia-ec2.png)
+
+### 8.6. Verificación automática de la rúbrica
+
+He ejecutado un verificador contra AWS. Comprueba los cuatro bloques técnicos de la rúbrica, no solo que los recursos existan.
+
+El resultado ha sido **39/39 comprobaciones correctas**:
+
+- Provider en `us-east-1`.
+- VPC-03 con `10.0.0.0/16` y estado `available`.
+- Subred A con `10.0.1.0/24`, `us-east-1a`, IP pública automática y pertenencia a la VPC.
+- Subred B con `10.0.2.0/24`, `us-east-1b`, IP pública automática y pertenencia a la VPC.
+- IGW asociado a la VPC.
+- Ruta `0.0.0.0/0` hacia el IGW.
+- Tabla de rutas asociada a las dos subredes.
+- SSH `tcp/22` desde `0.0.0.0/0`.
+- ICMP desde `10.0.0.0/16`.
+- Salida total permitida.
+- Exactamente 2 reglas de entrada y 1 de salida.
+- AMI de Amazon Linux 2023.
+- Las dos instancias son `t3.micro`, están en subredes distintas, usan `vockey`, el Security Group correcto, las etiquetas `ec2-a` y `ec2-b`, están en ejecución y tienen IP pública.
+- El par de claves `vockey` existe.
+
+![Verificación de los 39 puntos de la rúbrica](assets/16-verificacion-rubrica.png)
+
+También confirmé que Terraform no detecta cambios pendientes:
+
+```text
+No changes. Your infrastructure matches the configuration.
+```
+
+### 8.7. Pruebas de conectividad
+
+He probado el puerto SSH de las dos instancias desde el MacBook.
+
+- El puerto 22 responde en las dos IP públicas.
+- SSH exige autenticación por clave. Sin `vockey.pem`, AWS devuelve `Permission denied (publickey)`.
+- El ping desde fuera de la VPC se pierde al 100%. Es el comportamiento esperado: la regla ICMP solo permite `10.0.0.0/16`.
+
+![Pruebas de conectividad SSH e ICMP](assets/17-pruebas-conectividad.png)
 
 ---
 
@@ -471,11 +512,11 @@ Este comando elimina la VPC, las subredes, el Internet Gateway, la tabla de ruta
 
 | Criterio | Peso | Evidencia |
 |---|---:|---|
-| Provider, VPC y subredes | 20% | `versions.tf`, `main.tf`, capturas 01, 02, 03 y 04 |
-| Internet Gateway y tablas de rutas | 15% | Capturas 05 y 11 |
-| Security Group | 20% | Capturas 09 y 12 |
-| Instancias EC2 y etiquetado | 25% | Capturas 06, 07, 08 y 13 |
-| Repositorio y documentación | 20% | Estructura, README y capturas en `assets/` |
+| Provider, VPC y subredes | 20% | `versions.tf`, `main.tf`, capturas 01, 02, 03, 04, 10 y 16 |
+| Internet Gateway y tablas de rutas | 15% | Capturas 05, 11 y 16 |
+| Security Group | 20% | Capturas 09, 12 y 16 |
+| Instancias EC2 y etiquetado | 25% | Capturas 06, 07, 08, 13, 16 y 17 |
+| Repositorio y documentación | 20% | Estructura, README, captura 15 y todas las imágenes de `assets/` |
 
 ---
 
