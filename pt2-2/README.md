@@ -88,6 +88,10 @@ practiquescloud/
     └── README.md
 ```
 
+La estructura también se puede comprobar directamente en GitHub.
+
+![Estructura de pt2-2 en GitHub](assets/15-github.png)
+
 ---
 
 ## 5. Preparación del entorno
